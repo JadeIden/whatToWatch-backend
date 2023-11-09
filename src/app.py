@@ -7,7 +7,7 @@ import boto3
 def listItems(event, context) -> Union[List[schema.Item], schema.Error]:
     """Endpoint for pulling the list of items from the Items table in dynamodb."""
     client = boto3.resource("dynamodb")
-    items_table = client.Table("Items-dev")
+    items_table = client.Table("Items-prod")
 
     items_table.load()
 
