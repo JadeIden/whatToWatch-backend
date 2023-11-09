@@ -16,7 +16,7 @@ jobs:
           aws_access_key_id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws_secret_access_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws_region: us-east-2
-          function_name: whatToWatch_listItems
+          function_name: whatToWatch_listItems_prod
           source: src/*.py
       - name: whatToWatch_createItem deploy
         uses: appleboy/lambda-action@v0.1.9
@@ -24,7 +24,7 @@ jobs:
           aws_access_key_id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws_secret_access_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws_region: us-east-2
-          function_name: whatToWatch_createItem
+          function_name: whatToWatch_createItem_prod
           source: src/*.py
       - name: whatToWatch_showItemById deploy
         uses: appleboy/lambda-action@v0.1.9
@@ -32,5 +32,5 @@ jobs:
           aws_access_key_id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws_secret_access_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws_region: us-east-2
-          function_name: whatToWatch_showItemById
+          function_name: whatToWatch_showItemById_prod
           source: src/*.py
