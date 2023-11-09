@@ -1,19 +1,36 @@
-name: Deploying multiple Lambdas
+name: deploy to lambda
 on:
   push:
     branches:
       - main
 jobs:
-  lambdas:
-    strategy:
-      matrix:
-        lambda: [whatToWatch_listItems,whatToWatch_createItem,whatToWatch_showItemById]
+  deploy_source:
+    name: deploy lambda from source
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - name: checkout source code
+        uses: actions/checkout@v3
+      - name: whatToWatch_listItems deploy
+        uses: appleboy/lambda-action@v0.1.9
         with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: us-east-2
-      - run: zip -j ./build/source.zip ./src/*
-      - run: aws lambda update-function-code --function-name=${{matrix.lambda}} --zip-file=fileb://./build/source.zip
+          aws_access_key_id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws_secret_access_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws_region: us-east-2
+          function_name: whatToWatch_listItems
+          source: src/*.py
+      - name: whatToWatch_createItem deploy
+        uses: appleboy/lambda-action@v0.1.9
+        with:
+          aws_access_key_id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws_secret_access_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws_region: us-east-2
+          function_name: whatToWatch_createItem
+          source: src/*.py
+      - name: whatToWatch_showItemById deploy
+        uses: appleboy/lambda-action@v0.1.9
+        with:
+          aws_access_key_id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws_secret_access_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws_region: us-east-2
+          function_name: whatToWatch_showItemById
+          source: src/*.py
