@@ -13,7 +13,7 @@ def listItems(event, context) -> Union[List[schema.Item], schema.Error]:
 
     return {
         "statusCode": "200",
-        "body":  json.dumps([dataclasses.asdict(schema.Item(itemId = 1, name = "asdf", status = items_table.item_count, tags = []))])
+        "body":  json.dumps([dataclasses.asdict(schema.Item(itemId = 4, name = "asdf", status = items_table.item_count, tags = []))])
     }
 
     return dataclasses.asdict(schema.Error(
