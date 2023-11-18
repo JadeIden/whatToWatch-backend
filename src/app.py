@@ -40,7 +40,7 @@ def createItem(event, context) -> Union[schema.Item, schema.Error]:
         parsed_body = json.loads(event['body'])
         parsed_item = schema.Item(**parsed_body, itemId=str(uuid.uuid4()))
 
-    _ = items_table.put_item(Key={"itemId": parsed_body.itemId}, Item=parsed_item)
+    _ = items_table.put_item(Key={"itemId": parsed_item.itemId}, Item=parsed_item)
 
     return {
         "statusCode": "200",
@@ -57,7 +57,7 @@ def showItemById(event, context) -> Union[schema.Item, schema.Error]:
             message = "Missing id parameter from url"
         ))
 
-    input_id = event['pathParameters']['id']
+    input_id = event['pathParameters']['itemId']
 
     response = items_table.get_item(Key={
         "itemId": input_id
