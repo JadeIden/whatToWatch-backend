@@ -2,33 +2,74 @@ import schema
 import json
 from typing import Union, List
 import dataclasses
+import uuid
 import boto3
+
+def list_items(table):
+    results = table.scan()
+
+    items = results['Items']
+
+    items_mapped = [schema.Item(**item) for item in items]
+
+    return items_mapped
+
 
 def listItems(event, context) -> Union[List[schema.Item], schema.Error]:
     """Endpoint for pulling the list of items from the Items table in dynamodb."""
     client = boto3.resource("dynamodb")
     items_table = client.Table("Items-prod")
 
-    items_table.load()
+    result = list_items(items_table)
 
     return {
         "statusCode": "200",
-        "body":  json.dumps([dataclasses.asdict(schema.Item(itemId = 4, name = "asdf", status = items_table.item_count, tags = []))])
+        "body":  json.dumps([
+            dataclasses.asdict(item) for item in result
+        ])
     }
 
-    return dataclasses.asdict(schema.Error(
-        code = 1,
-        message = "Method not implemented"
-    ))
-
 def createItem(event, context) -> Union[schema.Item, schema.Error]:
-    return dataclasses.asdict(schema.Error(
-        code = 1,
-        message = "Method not implemented"
-    ))
+    """Endpoint for adding a new list to the Items table in dynamodb"""
+    client = boto3.resource("dynamodb")
+    items_table = client.Table("Items-prod")
+
+    parsed_item = None
+
+    if event is not None and event['body'] is not None:
+        parsed_body = json.loads(event['body'])
+        parsed_item = schema.Item(**parsed_body)
+
+    parsed_item.itemId = str(uuid.uuid4())
+
+    _ = items_table.put_item(Item=parsed_item)
+
+    return {
+        "statusCode": "200",
+        "body":  json.dumps(parsed_item)
+    }
 
 def showItemById(event, context) -> Union[schema.Item, schema.Error]:
+    client = boto3.resource("dynamodb")
+    items_table = client.Table("Items-prod")
+
+    if "pathParameters" not in event or "id" not in event["pathParameters"]:
+        return dataclasses.asdict(schema.Error(
+            code = 2,
+            message = "Missing id parameter from url"
+        ))
+
+    input_id = event['pathParameters']['id']
+
+    response = items_table.get_item(Key={
+        "itemId": input_id
+    })
+
+    item = response["Item"]
+
+    item_obj = schema.Item(**item)
+
     return dataclasses.asdict(schema.Error(
         code = 1,
-        message = "Method not implemented"
+        message = json.dumps(item_obj)
     ))
