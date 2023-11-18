@@ -26,7 +26,10 @@ resource "aws_iam_role_policy" "access_dynamodb_from_lambda" {
         "Sid": "AllowLambdaDynamodbAccess",
         "Effect": "Allow",
         "Action": [
-          "dynamodb:DescribeTable"
+          "dynamodb:DescribeTable",
+          "dynamodb:Scan",
+          "dynamodb:GetItem",
+          "dynamodb:PutItem",
         ]
         "Resource": "${aws_dynamodb_table.items-table-prod.arn}"
       }
