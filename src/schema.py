@@ -3,7 +3,7 @@ from typing import List
 
 @dataclass
 class Item:
-    itemId: int
+    itemId: str
     name: str
     status: str
     tags: List[str]

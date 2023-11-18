@@ -38,9 +38,7 @@ def createItem(event, context) -> Union[schema.Item, schema.Error]:
 
     if event is not None and event['body'] is not None:
         parsed_body = json.loads(event['body'])
-        parsed_item = schema.Item(**parsed_body)
-
-    parsed_item.itemId = str(uuid.uuid4())
+        parsed_item = schema.Item(**parsed_body, itemId=str(uuid.uuid4()))
 
     _ = items_table.put_item(Item=parsed_item)
 
@@ -53,7 +51,7 @@ def showItemById(event, context) -> Union[schema.Item, schema.Error]:
     client = boto3.resource("dynamodb")
     items_table = client.Table("Items-prod")
 
-    if "pathParameters" not in event or "id" not in event["pathParameters"]:
+    if event is None or "pathParameters" not in event or "id" not in event["pathParameters"]:
         return dataclasses.asdict(schema.Error(
             code = 2,
             message = "Missing id parameter from url"
