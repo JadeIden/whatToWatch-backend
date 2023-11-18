@@ -44,7 +44,7 @@ def createItem(event, context) -> Union[schema.Item, schema.Error]:
 
     return {
         "statusCode": "200",
-        "body":  json.dumps(parsed_item)
+        "body":  json.dumps(dataclasses.asdict(parsed_item))
     }
 
 def showItemById(event, context) -> Union[schema.Item, schema.Error]:
